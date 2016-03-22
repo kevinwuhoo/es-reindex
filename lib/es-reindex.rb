@@ -1,5 +1,6 @@
 require 'elasticsearch'
 require 'logger'
+require 'patron'
 
 require 'es-reindex/railtie' if defined?(Rails)
 
