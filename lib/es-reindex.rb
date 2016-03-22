@@ -59,8 +59,8 @@ class ESReindex
       end
     end
 
-    @sclient = Elasticsearch::Client.new host: surl
-    @dclient = Elasticsearch::Client.new host: durl
+    @sclient = Elasticsearch::Client.new host: surl, transport_options: { request: { timeout: 2*60 } }
+    @dclient = Elasticsearch::Client.new host: durl, transport_options: { request: { timeout: 2*60 } }
   end
 
   def okay_to_proceed?
