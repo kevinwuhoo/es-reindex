@@ -164,7 +164,7 @@ class ESReindex
     @start_time = Time.now
     #Appends a query and scroll time to source client search.
 
-    scroll = sclient.search index: sidx, search_type: "scan", scroll: @options[:scroll], size: frame, body: @options[:query] 
+    scroll = sclient.search index: sidx, search_type: "scan", scroll: @options[:scroll], size: frame, body: @options[:query]
     scroll_id = scroll['_scroll_id'] #initializes scroll id
     total = scroll['hits']['total']
     log "Copy progress: %u/%u (%.1f%%) done.\r" % [done, total, 0]
@@ -177,6 +177,10 @@ class ESReindex
       scroll['hits']['hits'].each do |doc|
         options[:before_each] && options[:before_each].call
         ### === implement possible modifications to the document
+        # Could also use a proc in the options I guess
+        if respond_to?(:modified_doc)
+          doc = modified_doc
+        end
         ### === end modifications to the document
         base = {'_index' => didx, '_id' => doc['_id'], '_type' => doc['_type'], data: doc['_source']}
         bulk << {action => base}
